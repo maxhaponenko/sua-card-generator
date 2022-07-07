@@ -1,0 +1,12 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+ @import 'normalize.css';
+ @import url('https://fonts.googleapis.com/css2?family=Pangolin&display=swap');
+
+body, html, #root {
+  height: 100%;
+  width: 100%;
+  font-family: 'Pangolin', cursive;
+}
