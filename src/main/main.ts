@@ -9,10 +9,10 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Menu, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import MenuBuilder from './menu';
+import { readAndPipeCsv } from './processes/read-and-pipe-csv'
 import { resolveHtmlPath } from './util';
 
 class AppUpdater {
@@ -71,7 +71,6 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    center: true,
     width: 1000,
     height: 709,
     resizable: false,
@@ -83,6 +82,8 @@ const createWindow = async () => {
         : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
   });
+
+
 
   mainWindow.setAspectRatio(1.4142)
 
@@ -103,8 +104,28 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
+  // setting up the menu with just two items
+  const menu = Menu.buildFromTemplate([
+    {
+      label: 'Upload *.csv file',
+      accelerator: 'CmdOrCtrl+O',
+      click() {
+        dialog.showOpenDialog({
+          properties: ['openFile'],
+        })
+          .then(function (fileObj) {
+            // the fileObj has two props
+            if (mainWindow && !fileObj.canceled) {
+              readAndPipeCsv(fileObj, mainWindow.webContents)
+            }
+          })
+          .catch(function (err) {
+            console.error(err)
+          })
+      }
+    }
+  ])
+  Menu.setApplicationMenu(menu)
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
@@ -140,3 +161,6 @@ app
     });
   })
   .catch(console.log);
+
+
+  export const win: BrowserWindow | null = mainWindow;

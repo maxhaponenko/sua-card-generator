@@ -3,7 +3,6 @@ import { Card } from './components/card/card'
 import './App.scss';
 
 
-
 export default function App() {
   return (
     <Router>
