@@ -9,11 +9,12 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, Menu, dialog } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Menu, dialog, IpcMainInvokeEvent } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { readAndPipeCsv } from './processes/read-and-pipe-csv'
 import { resolveHtmlPath } from './util';
+import { generatePdf } from './processes/generate-pdf';
 
 class AppUpdater {
   constructor() {
@@ -36,8 +37,7 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install();
 }
 
-const isDebug =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
@@ -77,6 +77,8 @@ const createWindow = async () => {
 
     icon: getAssetPath('icon.png'),
     webPreferences: {
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
@@ -162,5 +164,9 @@ app
   })
   .catch(console.log);
 
+
+  ipcMain.handle('generate-pdf', async function(event: IpcMainInvokeEvent, data) {
+    return await generatePdf(data)
+  })
 
   export const win: BrowserWindow | null = mainWindow;

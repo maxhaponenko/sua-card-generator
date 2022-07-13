@@ -37,9 +37,6 @@ export class CardGenerator {
         text: item[3]
       }
     }))
-
-    console.log(toJS(this.rows))
-
   }
 
   markAsDone = (index: number) => {

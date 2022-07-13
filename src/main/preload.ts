@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { generatePdf } from './processes/generate-pdf'
 
 export type Channels = 'ipc-example';
 
@@ -17,5 +18,6 @@ contextBridge.exposeInMainWorld('electron', {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
+    generatePdf: (...args: any) => generatePdf(args),
   },
 });
