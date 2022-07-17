@@ -44,7 +44,7 @@ const configuration: webpack.Configuration = {
 
   mode: 'development',
 
-  target: ['web', 'electron-renderer'],
+  target: 'electron-renderer',
 
   entry: [
     `webpack-dev-server/client?http://localhost:${port}/dist`,
@@ -63,7 +63,7 @@ const configuration: webpack.Configuration = {
 
   resolve: {
     fallback: {
-      // fs: false
+      fs: false
     }
   },
 
@@ -139,6 +139,7 @@ const configuration: webpack.Configuration = {
 
     new HtmlWebpackPlugin({
       filename: path.join('index.html'),
+      // inject: true,
       template: path.join(webpackPaths.srcRendererPath, 'index.ejs'),
       minify: {
         collapseWhitespace: true,
@@ -150,11 +151,22 @@ const configuration: webpack.Configuration = {
       isDevelopment: process.env.NODE_ENV !== 'production',
       nodeModules: webpackPaths.appNodeModulesPath,
     }),
+
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer']
+    }),
+
+    new webpack.DefinePlugin({
+      'process.env.THING': false
+    })
+
   ],
 
   node: {
-    __dirname: false,
-    __filename: false,
+    // global: true,
+    __dirname: true,
+    __filename: true,
   },
 
   devServer: {
@@ -169,13 +181,6 @@ const configuration: webpack.Configuration = {
       verbose: true,
     },
     setupMiddlewares(middlewares) {
-      console.log('Starting preload.js builder...');
-      const preloadProcess = spawn('npm', ['run', 'start:preload'], {
-        shell: true,
-        stdio: 'inherit',
-      })
-        .on('close', (code: number) => process.exit(code!))
-        .on('error', (spawnError) => console.error(spawnError));
 
       console.log('Starting Main Process...');
       let args = ['run', 'start:main'];
@@ -189,7 +194,6 @@ const configuration: webpack.Configuration = {
         stdio: 'inherit',
       })
         .on('close', (code: number) => {
-          preloadProcess.kill();
           process.exit(code!);
         })
         .on('error', (spawnError) => console.error(spawnError));
