@@ -3,10 +3,7 @@ import fs from 'fs'
 
 const options: Electron.PrintToPDFOptions = {
   marginsType: 1,
-  pageSize: {
-    width: 1000,
-    height: 709
-  },
+  pageSize: 'A6',
   printBackground: true,
   printSelectionOnly: false,
   landscape: true,

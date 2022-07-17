@@ -5,6 +5,7 @@ import moment from 'moment'
 import './card.scss'
 import { useStores } from 'renderer/store/root.store'
 import { observer } from 'mobx-react'
+import { useEffect } from 'react'
 const ipcRenderer = require('electron').ipcRenderer
 
 
@@ -19,12 +20,19 @@ export const Card = observer(() => {
   async function processExport() {
     try {
       await ipcRenderer.invoke('generate-pdf', cardGeneratorStore.currentRow.id)
-      // cardGeneratorStore.markAsDone()
+      cardGeneratorStore.markAsDone()
     } catch (error) {
       console.log(error)
       throw error
     }
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      processExport()
+    }, 1500)
+  }, [cardGeneratorStore.currentRow])
+
 
   if (!cardGeneratorStore.currentRow) return null
 
