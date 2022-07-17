@@ -75,20 +75,17 @@ const createWindow = async () => {
     height: 709,
     resizable: false,
 
+
     icon: getAssetPath('icon.png'),
     webPreferences: {
       nodeIntegration: true,
-      nodeIntegrationInWorker: true,
-      preload: app.isPackaged
-        ? path.join(__dirname, 'preload.js')
-        : path.join(__dirname, '../../.erb/dll/preload.js'),
+      contextIsolation: false
     },
   });
 
 
 
   mainWindow.setAspectRatio(1.4142)
-
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
@@ -152,21 +149,18 @@ app.on('window-all-closed', () => {
   }
 });
 
-app
-  .whenReady()
-  .then(() => {
-    createWindow();
-    app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      if (mainWindow === null) createWindow();
-    });
-  })
-  .catch(console.log);
+app.whenReady().then(() => {
+  createWindow();
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (mainWindow === null) createWindow();
+  });
+}).catch(console.log);
 
 
-  ipcMain.handle('generate-pdf', async function(event: IpcMainInvokeEvent, data) {
-    return await generatePdf(data)
-  })
+ipcMain.handle('generate-pdf', async function (event: IpcMainInvokeEvent) {
+  return await generatePdf()
+})
 
-  export const win: BrowserWindow | null = mainWindow;
+export const win: BrowserWindow | null = mainWindow;

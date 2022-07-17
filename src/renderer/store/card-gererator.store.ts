@@ -1,7 +1,7 @@
-import { makeAutoObservable, toJS } from "mobx";
+import { computed, makeAutoObservable, toJS } from "mobx";
 import { RootStore } from "./root.store";
 
-type Row = Array<{
+export type Rows = Array<{
   id: number;
   isExportedAsPdf: boolean;
   data: {
@@ -22,9 +22,14 @@ export class CardGenerator {
     makeAutoObservable(this)
   }
 
-  rows: Row = [];
+  rows: Rows = [];
 
-  setRows(rows: Array<Array<string>>) {
+  get currentRow(): Rows[0] {
+    const newArray = [ ...this.rows ]
+    return newArray.filter(item => item.isExportedAsPdf === false)[0]
+  }
+
+  initRows = (rows: Array<Array<string>>) => {
     rows.shift() // Remove table header names (first row)
 
     this.rows = rows.map((item, index) => ({
@@ -37,10 +42,11 @@ export class CardGenerator {
         text: item[3]
       }
     }))
+
   }
 
-  markAsDone = (index: number) => {
-    this.rows[index].isExportedAsPdf = true
+  markAsDone = () => {
+    this.rows.filter(item => item.isExportedAsPdf === false)[0].isExportedAsPdf = true
   }
 
 }
@@ -57,9 +63,6 @@ function mapImageStringToObject(imageSrcString: string): Image {
   if (width / height > 0.75 && width / height < 1.25) shape = 'square'
   if (width / height >= 1.25) shape = 'album'
   if (width / height <= 0.75) shape = 'portrait'
-
-  console.log(url)
-  // if (!url) debugger
 
   return {
     url: url ? `https://static.wixstatic.com/media/${url}` : undefined,
