@@ -4,7 +4,6 @@ import path from 'path';
 
 export let resolveHtmlPath: (htmlFileName: string) => string;
 
-
 if (process.env.NODE_ENV === 'development') {
   const port = process.env.PORT || 1212;
   resolveHtmlPath = (htmlFileName: string) => {

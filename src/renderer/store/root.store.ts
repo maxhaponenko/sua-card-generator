@@ -18,5 +18,5 @@ export const rootStore = new RootStore()
 export const StoresContext = React.createContext(rootStore);
 
 export function useStores(): RootStore {
-  return React.useContext(StoresContext)
+  return toJS(React.useContext(StoresContext))
 }

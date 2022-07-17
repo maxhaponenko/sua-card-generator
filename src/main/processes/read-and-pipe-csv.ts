@@ -1,7 +1,6 @@
 import { WebContents } from 'electron';
 import { parseFile } from 'fast-csv';
 
-
 export function readAndPipeCsv(fileObject: Electron.OpenDialogReturnValue, webContents: WebContents) {
 
   let rows: Array<Array<string>> = []

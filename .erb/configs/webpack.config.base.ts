@@ -43,32 +43,15 @@ const configuration: webpack.Configuration = {
     modules: [webpackPaths.srcPath, 'node_modules'],
     fallback: {
       fs: false,
-      path: require.resolve('path-browserify'),
+      path: require.resolve('path-browserify')
     },
   },
-
 
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
     }),
-    new webpack.ProvidePlugin({
-      process: 'process/browser',
-      Buffer: ['buffer', 'Buffer']
-    }),
-    new webpack.DefinePlugin({
-      'process.env.THING': false
-    })
   ],
-
-  node: {
-    // provides the global variable named "global"
-    // global: true,
-
-    // provide __filename and __dirname global variables
-    __filename: true,
-    __dirname: true,
-  }
 };
 
 export default configuration;
