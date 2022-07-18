@@ -65,8 +65,10 @@ function mapImageStringToObject(imageSrcString: string): Image {
   if (width / height >= 1.25) shape = 'album'
   if (width / height <= 0.75) shape = 'portrait'
 
+  const defaultImageUrl = 'https://static.wixstatic.com/media/ba7697_44768b8c0e354f918aa7aeab45fe634c~mv2.jpg'
+
   return {
-    url: url ? `https://static.wixstatic.com/media/${url}` : undefined,
+    url: url ? `https://static.wixstatic.com/media/${url}` : defaultImageUrl,
     shape: shape
   }
 
