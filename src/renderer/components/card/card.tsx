@@ -45,21 +45,17 @@ export const Card = observer(function Card() {
     }, 2000)
   }, [currentRow])
 
-
-  if (!currentRow) return null
+  if (!currentRow) {
+    return <button className='upload-csv-btn' onClick={() => processUpload()}>Upload CSV</button>
+  }
 
   const fontSize = currentRow.data.text.length < 200 ? 25 :
     currentRow.data.text.length < 300 ? 22 :
       currentRow.data.text.length < 400 ? 20 :
         17
 
-        debugger
-  if (!currentRow) {
-
-    return <button className='upload-csv-btn'>Upload CSV</button>
-  }
-
   return (
+
     <div className="card-generator" >
       <img className="background-layer" src={bgImage}></img>
       <div
