@@ -42,7 +42,7 @@ export const Card = observer(function Card() {
   useEffect(() => {
     setTimeout(() => {
       processExport()
-    }, 1500)
+    }, 2000)
   }, [currentRow])
 
 
@@ -62,11 +62,11 @@ export const Card = observer(function Card() {
   return (
     <div className="card-generator" >
       <img className="background-layer" src={bgImage}></img>
-      <img
+      <div
         onClick={() => processExport()}
         className={`image ${currentRow.data.image.shape}`}
-        src={currentRow.data.image.url}
-      ></img>
+        style={{ backgroundImage: `url(${currentRow.data.image.url})`}}
+      ></div>
       <div className="sign-container">
         <div>{currentRow.data.name}</div>
         <div><img src={CalendarIcon}></img>{moment(currentRow.data.date).format('DD/MM/YYYY')}</div>
