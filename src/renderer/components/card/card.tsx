@@ -6,6 +6,7 @@ import './card.scss'
 import { useStores, rootStore } from 'renderer/store/root.store'
 import { observer } from 'mobx-react'
 import { useEffect } from 'react'
+import { Rows } from 'renderer/store/card-gererator.store'
 const ipcRenderer = require('electron').ipcRenderer
 
 
@@ -54,6 +55,38 @@ export const Card = observer(function Card() {
       currentRow.data.text.length < 400 ? 20 :
         17
 
+
+
+  const getImageDimensions = (currentRow: Rows[0]) => {
+    const IMAGE_WINDOW_WIDTH_SIZE = {
+      album: 52,
+      square: 43,
+      portrait: 36,
+    }
+
+    const imageWidth_vw = IMAGE_WINDOW_WIDTH_SIZE[currentRow.data.image.shape]
+    const ratio = currentRow.data.image.width / imageWidth_vw
+    const imageHeight_vw = currentRow.data.image.height / ratio
+
+    let result = { width: imageWidth_vw, height: imageHeight_vw }
+
+    if (result.width > 55 || result.height > 55) {
+      result.width *= 0.8
+      result.height *= 0.8
+    }
+    if (result.width > 65 || result.height > 65) {
+      result.width *= 0.65
+      result.height *= 0.65
+    }
+    if (result.width > 75 || result.height > 75) {
+      result.width *= 0.55
+      result.height *= 0.55
+    }
+
+    return result
+  }
+
+
   return (
 
     <div className="card-generator" >
@@ -61,7 +94,11 @@ export const Card = observer(function Card() {
       <div
         onClick={() => processExport()}
         className={`image ${currentRow.data.image.shape}`}
-        style={{ backgroundImage: `url(${currentRow.data.image.url})`}}
+        style={{
+          backgroundImage: `url(${currentRow.data.image.url})`,
+          width: getImageDimensions(currentRow).width + 'vw' ,
+          height: getImageDimensions(currentRow).height + 'vw',
+        }}
       ></div>
       <div className="sign-container">
         <div>{currentRow.data.name}</div>

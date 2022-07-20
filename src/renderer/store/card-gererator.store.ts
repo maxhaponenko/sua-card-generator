@@ -13,6 +13,8 @@ export type Rows = Array<{
 }>
 type Image = {
   url: string | undefined;
+  width: number,
+  height: number,
   shape: 'album' | 'portrait' | 'square'
 }
 
@@ -61,14 +63,16 @@ function mapImageStringToObject(imageSrcString: string): Image {
   const height = parseInt((imageSrcString.match(/((?<=originHeight=).\d+)/) || [])[0])
 
   let shape: Image['shape'] = 'square';
-  if (width / height > 0.75 && width / height < 1.25) shape = 'square'
-  if (width / height >= 1.25) shape = 'album'
-  if (width / height <= 0.75) shape = 'portrait'
+  if (width / height > 0.9 && width / height < 1.1) shape = 'square'
+  if (width / height >= 1.1) shape = 'album'
+  if (width / height <= 0.9) shape = 'portrait'
 
   const defaultImageUrl = 'https://static.wixstatic.com/media/ba7697_44768b8c0e354f918aa7aeab45fe634c~mv2.jpg'
 
   return {
     url: url ? `https://static.wixstatic.com/media/${url}` : defaultImageUrl,
+    width: width,
+    height: height,
     shape: shape
   }
 
