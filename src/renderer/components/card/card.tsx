@@ -31,6 +31,14 @@ export const Card = observer(function Card() {
     }
   }
 
+  async function processUpload() {
+    try {
+      await ipcRenderer.invoke('upload-csv')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     setTimeout(() => {
       processExport()
@@ -44,6 +52,12 @@ export const Card = observer(function Card() {
     currentRow.data.text.length < 300 ? 22 :
       currentRow.data.text.length < 400 ? 20 :
         17
+
+        debugger
+  if (!currentRow) {
+
+    return <button className='upload-csv-btn'>Upload CSV</button>
+  }
 
   return (
     <div className="card-generator" >
