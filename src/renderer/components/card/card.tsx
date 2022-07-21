@@ -79,8 +79,8 @@ export const Card = observer(function Card() {
       result.height *= 0.65
     }
     if (result.width > 75 || result.height > 75) {
-      result.width *= 0.55
-      result.height *= 0.55
+      result.width *= 0.5
+      result.height *= 0.5
     }
 
     return result
